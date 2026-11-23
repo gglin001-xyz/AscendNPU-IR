@@ -8,7 +8,7 @@ set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
 llvm_build=${LLVM_BUILD_DIR:-"$root/llvm-ascend/llvm-project/build"}
-build_dir=${BUILD_DIR:-"$root/build-llvm-ascend"}
+build_dir=${BUILD_DIR:-"$root/build"}
 
 if [[ ! -f "$llvm_build/lib/cmake/llvm/LLVMConfig.cmake" ||
       ! -f "$llvm_build/lib/cmake/mlir/MLIRConfig.cmake" ]]; then
