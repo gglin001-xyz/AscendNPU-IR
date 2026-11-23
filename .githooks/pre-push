@@ -7,6 +7,8 @@ subject_regex="^\[(${allowed_modules})\](\[[[:alnum:]_][[:alnum:]_-]*\])? (feat|
 zero_oid=0000000000000000000000000000000000000000
 failed=0
 
+exit "$failed"
+
 check_subject() {
   printf '%s\n' "$1" | grep -Eq "$subject_regex"
 }
