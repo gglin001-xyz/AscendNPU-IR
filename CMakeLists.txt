@@ -2,6 +2,40 @@
 cmake_minimum_required(VERSION 3.28.0)
 project(bishengir)
 
+if(PROJECT_IS_TOP_LEVEL)
+  find_package(MLIR REQUIRED CONFIG)
+  if(NOT LLVM_BUILD_BINARY_DIR)
+    message(FATAL_ERROR "BiShengIR requires an LLVM/MLIR build tree")
+  endif()
+  # Match the LLVM build's linker and its Ascend TableGen feature switches.
+  load_cache("${LLVM_BUILD_BINARY_DIR}" READ_WITH_PREFIX ""
+    CMAKE_LINKER_TYPE LLVM_USE_LINKER LLVM_ENABLE_LLD
+    LLVM_BSPUB_DAVINCI LLVM_BSPUB_DAVINCI_BISHENGIR BSPUB_DAVINCI_BISHENGIR
+    LLVM_BSPUB_DAVINCI_BISHENGIR_A5 LLVM_BSPUB_DAVINCI_BISHENGIR_A5_NPUIR)
+  set(LLVM_MAIN_SRC_DIR "${LLVM_BUILD_MAIN_SRC_DIR}")
+  set(LLVM_BINARY_DIR "${LLVM_BUILD_BINARY_DIR}")
+  set(LLVM_RUNTIME_OUTPUT_INTDIR "${CMAKE_BINARY_DIR}/bin")
+  set(LLVM_LIBRARY_OUTPUT_INTDIR "${CMAKE_BINARY_DIR}/lib")
+  set(LLVM_BUILD_TOOLS ON)
+
+  list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+  include(GNUInstallDirs)
+  separate_arguments(llvm_definitions NATIVE_COMMAND "${LLVM_DEFINITIONS}")
+  add_definitions(${llvm_definitions})
+  include(HandleLLVMOptions)
+  set(CMAKE_INCLUDE_CURRENT_DIR ON)
+  set(CMAKE_CXX_STANDARD 17)
+
+  # MLIR exports the generated headers but not their individual build targets.
+  foreach(target IN ITEMS MLIRArithTransformsIncGen MLIRConversionPassIncGen
+      MLIRLLVMPassIncGen MLIRLinalgTransformEnumsIncGen MLIRMemRefPassIncGen
+      MLIRTensorTransformsIncGen)
+    if(NOT TARGET ${target})
+      add_custom_target(${target})
+    endif()
+  endforeach()
+endif()
+
 # bishengir-target-spec-tblgen related target has ninja version requirement
 if(CMAKE_GENERATOR MATCHES "Ninja")
   execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} --version

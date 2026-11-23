@@ -62,7 +62,7 @@ set(LIBS
   MLIRHIVMRegbaseIntrinsUtils
   MLIRHIVMToLLVM
   MLIRHIVMToLLVMIRTranslation
-  MLIRTestTransforms
+  # MLIRTestTransforms
   GluonIR
   MLIRFuncAllExtensions
   TritonInstrumentTransforms
