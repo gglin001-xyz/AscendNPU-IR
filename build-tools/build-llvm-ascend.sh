@@ -25,4 +25,4 @@ cmake -S "$root" -B "$build_dir" -G Ninja \
   -DBISHENGIR_ENABLE_TRITON_COMPILE=ON \
   -DBISHENGIR_ENABLE_PM_CL_OPTIONS=ON \
   -DBISHENGIR_PUBLISH=ON
-cmake --build "$build_dir" --parallel "${CMAKE_BUILD_PARALLEL_LEVEL:-32}" "$@"
+cmake --build "$build_dir" --parallel "${CMAKE_BUILD_PARALLEL_LEVEL:-64}" "$@"
